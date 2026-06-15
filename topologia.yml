@@ -1,1 +1,28 @@
+name: lab-switch
 
+topology:
+  nodes:
+    # O Switch virtual (usando uma imagem leve de Linux bridge ou similar para simular o switch)
+    switch1:
+      kind: linux
+      image: nicolaka/netshoot
+      # Ativa o modo de encaminhamento para funcionar como switch/bridge
+      cmd: sysctl -w net.ipv4.ip_forward=1
+
+    # Computador A
+    node-a:
+      kind: linux
+      image: nicolaka/netshoot
+      mgmt-ipv4: 172.20.20.10
+
+    # Computador B
+    node-b:
+      kind: linux
+      image: nicolaka/netshoot
+      mgmt-ipv4: 172.20.20.11
+
+  links:
+    # Conecta a interface eth1 do node-a à interface eth1 do switch1
+    - endpoints: ["node-a:eth1", "switch1:eth1"]
+    # Conecta a interface eth1 do node-b à interface eth2 do switch1
+    - endpoints: ["node-b:eth1", "switch1:eth2"]
